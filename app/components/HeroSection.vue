@@ -10,6 +10,7 @@
         <div class="actions">
         <a href="#projects" class="btn primary">View Projects</a>
         <a href="#about" class="btn">About Me</a>
+        <a href="https://github.com/rageypeep" target="_blank" class="btn">GitHub</a>
         </div>
     </section>
 </template>
