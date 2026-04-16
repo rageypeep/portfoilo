@@ -135,6 +135,48 @@ h2 {
   opacity: 1;
 }
 
+.card[data-type="engine"] {
+  border-color: #f97316;
+}
+.card[data-type="engine"] .badge {
+  color: #f97316;
+}
+
+.card[data-type="experimental"] {
+  border-color: #8b5cf6;
+}
+.card[data-type="experimental"] .badge {
+  color: #8b5cf6;
+}
+
+.card[data-type="fun"] {
+  border-color: #ec4899;
+}
+.card[data-type="fun"] .badge {
+  color: #ec4899;
+}
+
+.badge {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.tags {
+  margin-top: 0.75rem;
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.tags span {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+}
+
 .fade-in {
   opacity: 0;
   transform: translateY(30px);
@@ -155,4 +197,64 @@ h2 {
 
 .links a {
   font-size: 0.9rem;
+}
+
+
+/* Project Page Styles */
+.project-page {
+  min-height: 100vh;
+  padding: 4rem 1.5rem;
+}
+
+.project-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 2rem;
+  color: #94a3b8;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: #e2e8f0;
+}
+
+.project-type {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin-bottom: 0.75rem;
+}
+
+.project-page h1 {
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  margin: 0 0 1rem;
+}
+
+.project-intro {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: #cbd5e1;
+  max-width: 760px;
+}
+
+.project-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin: 2rem 0;
+}
+
+.project-content {
+  margin-top: 2rem;
+}
+
+.project-content p {
+  line-height: 1.8;
+  color: #dbe4f0;
+  margin-bottom: 1.25rem;
 }
