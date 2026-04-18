@@ -48,8 +48,6 @@ export const projects = [
 
     ],
     hero: '/images/jotspot-hero.png',
-    video: '/videos/jotspot.mp4',
-    caption: 'Live workflow have posting a jot and browsing feautres.',
     features: [
       'Instant saving and live updates',
       'CLI Interface leting you push logs from command line',
@@ -61,7 +59,34 @@ export const projects = [
       'Designing a fast and fluid user experience',
       'Creating a auto-save feature that supports a number of users at once',
       'Making a user management system with admin controls'
-    ]
+    ],
+    timeline: [
+      {
+        image: '/images/screenshots/jotspot/jotspot-1.png',
+        title: '01 — The Welcome Page',
+        caption: 'The first thing a user sees when they visit the site, with a simple and clean design that encourages them to start jotting down their thoughts and sharing them with others.'
+      },
+      {
+        image: '/images/screenshots/jotspot/jotspot-2.png',
+        title: '02 — Making a Jot',
+        caption: 'The interface for creating and editing notes, with a focus on providing a smooth and intuitive writing experience, supporting Markdown and with a live preview, the site auto saves after 100ms of inactivity.'
+      },
+      {
+        image: '/images/screenshots/jotspot/jotspot-3.png',
+        title: '03 — The Explore Page',
+        caption: 'This page allows users to browse and discover notes shared by others, with filtering and search capabilities to find relevant content quickly. Jots are scored based on a like to dislike ratio, making it easy to find popular and well-received content.'
+      },
+      {
+        image: '/images/screenshots/jotspot/jotspot-4.png',
+        title: '04 — CLI Options',
+        caption: 'Command-line interface options for pushing logs and managing content directly from the terminal. This allows for quick and easy content creation without needing to navigate the web interface, making it ideal for users who prefer working in a terminal environment or want to automate content creation through scripts.'
+      },
+      {
+        image: '/images/screenshots/jotspot/jotspot-5.png',
+        title: '05 — User Settings',
+        caption: 'Here users can manage their account settings, with optional developer options for API access and CLI token management, giving users more control over how they interact with the platform and integrate it into their workflows.'
+      },
+    ],
   },
   {
     title: 'rageypeep.gg',
@@ -70,6 +95,9 @@ export const projects = [
     type: 'webapp',
     tech: ['Python', 'Flask', 'HTMX', 'Steam API', 'Auto-build', 'Cronjobs'],
     slug: 'rageypeep',
+    hero: '/images/rageypeep-hero.png',
+    video: '/videos/rageypeep.mp4',
+    caption: 'A demo of the rageypeep.gg platform, showcasing automatic game page generation, custom content and dynamic updates.',
     content: [
       "rageypeep.gg is a custom-built web application designed to track playthroughs, reviews and personal game logs, combining automation with flexible content creation.",
 
@@ -98,6 +126,33 @@ export const projects = [
       "Handling background updates and data refresh without interrupting the user experience",
       "Managing deployment, hosting and performance on a self-hosted server"
     ],
+    timeline: [
+      {
+        image: '/images/screenshots/rageypeep/rageypeep-1.png',
+        title: '01 — Login via Steam',
+        caption: 'The login page, which uses the Steam OpenID system to authenticate users and retrieve their game data for automatic page generation.'
+      },
+      {
+        image: '/images/screenshots/rageypeep/rageypeep-2.png',
+        title: '02 — Showing the Admin Dashboard',
+        caption: 'Info regarding hourly cronjobs, with the latest Steam activity and quick links to manage content and trigger updates.'
+      },
+      {
+        image: '/images/screenshots/rageypeep/rageypeep-3.png',
+        title: '03 — The New Game Page',
+        caption: 'Taking product information and generating a new game page. The page is generated with the relevant data from the Steam API, including title, description and playtime, which can then be extended with custom content and screenshots.'
+      },
+      {
+        image: '/images/screenshots/rageypeep/rageypeep-4.png',
+        title: '04 — The Theme Editor',
+        caption: 'A simple interface for changing the styling of the site, with live preview and the ability to create and manage multiple themes. This allows for quick visual updates without needing to redeploy or change code. Includes HTMX partials for different components, making it easy to update the look and feel of the site on the fly.'
+      },
+      {
+        image: '/images/screenshots/rageypeep/rageypeep-5.png',
+        title: '05 — Select or make your own Game Banner',
+        caption: 'Take the game banner from Steam assets or upload your own. This allows for more control over the visual presentation of each game page, while still providing a quick option to use existing assets from Steam.'
+      },
+    ],
 
   },
   {
@@ -108,6 +163,7 @@ export const projects = [
     tech: ['Python', 'Flask', 'HTMX', 'Stripe API', 'Custom CMS'],
     slug: 'ultimaprops',
     status: "In Development / Demo",
+    hero: '/images/props-hero.png',
     content: [
       "Ultima Props is a custom-built e-commerce platform designed to handle both physical and digital products, with a focus on flexibility and control over the entire system.",
 
@@ -125,7 +181,54 @@ export const projects = [
       "Flexible shipping logic with per-product pricing",
       "Dynamic interface using Flask and HTMX",
       "Reusable platform design for multiple storefronts"
-    ]
+    ],
+    timeline: [
+    {
+      image: '/images/screenshots/props/props-1.png',
+      title: '01 — Showing the Home page',
+      caption: 'Showing the home page.'
+    },
+    {
+      image: '/images/screenshots/props/props-2.png',
+      title: '02 — Showing the Shop page',
+      caption: 'Items listed on the shop page on titdy cards.'
+    },
+    {
+      image: '/images/screenshots/props/props-3.png',
+      title: '03 — A product page',
+      caption: 'Showing the product, with clear pricing and photos which can be easily updated from the admin panel.'
+    },
+    {
+      image: '/images/screenshots/props/props-4.png',
+      title: '04 — The Admin Dashboard',
+      caption: 'Immidiately see the products and orders, with quick links to manage them and keep track of new orders as they come in.'
+    },
+    {
+      image: '/images/screenshots/props/props-5.png',
+      title: '05 — The New Product Form',
+      caption: 'Lets the user add a new product, physical or digital, with all the relevant information and shipping cost, which is then automatically added to the shop page and available for purchase without any additional work needed.'
+    },
+    {
+      image: '/images/screenshots/props/props-6.png',
+      title: '06 — Accounting and Orders',
+      caption: 'Full accounts page showing all orders, with details and totals, making it easy to keep track of sales and manage the business side of things.'
+    },
+    {
+      image: '/images/screenshots/props/props-7.png',
+      title: '07 — Stripe Payment Integration',
+      caption: 'The checkout page, which securely collects payment information and processes orders through Stripe, with support for both one-time purchases and digital downloads.'
+    },
+    {
+      image: '/images/screenshots/props/props-8.png',
+      title: '08 — Payment confirmation and Order Management',
+      caption: 'Order has been made and will be waiting in the admin dashboard, with all the relevant information and payment confirmation, ready to be fulfilled by the shop owner.'
+    },
+    {
+      image: '/images/screenshots/props/props-9.png',
+      title: '09 — Digital Download Management',
+      caption: 'On completion of payment for a digital product, the user is given access to a secure download link, which can be managed and monitored from the admin dashboard, ensuring a smooth experience for both the customer and the shop owner.'
+    },
+  ],
   },
   {
     title: 'Planetary Voxel Engine',
@@ -348,12 +451,25 @@ export const projects = [
       "Page creation, retrieval and deletion",
       "User-specific content management"
     ],
+    learning: [
+      "Frontend framework choice should align with the complexity of the product",
+      "Not all applications benefit from heavy client-side architecture",
+      "Simplicity and user experience can be more important than technical stack choice",
+      "Recognising friction early can lead to better long-term design decisions"
+    ],
 
-    challenges: [
-      "Designing a simple publishing workflow without adding unnecessary complexity",
-      "Implementing authentication and user ownership early in the project",
-      "Structuring data flow between React frontend and backend API",
-      "Exploring the foundations of a product that would later evolve into JotSpot"
+    postmortem: [
+      "Simple Pages began as an exploration into building a lightweight, multi-user publishing platform, with a React frontend and an Express/PostgreSQL backend.",
+
+      "The core functionality was in place early on, including authentication, user-owned content and page creation, forming the foundation of a functional system.",
+
+      "However, as development progressed, the choice of React for the frontend began to introduce friction for this particular type of application. The additional complexity and overhead did not align well with the goal of creating a fast, simple and low-friction writing experience.",
+
+      "This led to a shift in thinking around how the interface should behave. Rather than building a more complex client-side application, a server-driven approach with simpler frontend logic became a more suitable direction.",
+
+      "At this point, development of Simple Pages was intentionally paused, with the focus moving toward rethinking the architecture and user experience.",
+
+      "These ideas were later developed further in JotSpot, where a different approach to rendering and interaction was used to better match the original goal of simplicity and speed."
     ]
   },
   {
@@ -390,19 +506,26 @@ export const projects = [
       "Noise-based mask generation for Unity workflows",
       "Early experimentation with texture processing pipelines"
     ],
-
-    challenges: [
-      "Achieving real-time preview performance in Python",
-      "Handling image processing efficiently for interactive use",
-      "Designing a workflow that could scale beyond simple tools",
-      "Identifying when a technology choice limits further development"
+    learning: [
+      "Choosing the right language and tools is critical for performance-sensitive applications",
+      "Real-time visual tools require a different approach than offline data processing",
+      "Prototyping can reveal limitations early and guide better architectural decisions",
+      "Recognising when to rebuild is often more valuable than continuing to patch a system"
     ],
 
-    learning: [
-      "Understanding the fundamentals of PBR texture workflows",
-      "Practical experience with procedural generation techniques",
-      "Recognising performance limitations of certain languages for real-time applications",
-      "The importance of choosing the right tools for the problem"
+
+    postmortem: [
+      "This project was an early attempt at building a practical PBR texture generation tool, but it quickly exposed the limitations of using Python for interactive graphical applications.",
+
+      "The core functionality worked, but real-time preview performance was consistently poor. Updating and rendering texture maps at interactive speeds proved difficult, especially when trying to iterate quickly on visual output.",
+
+      "Much of the friction came from the mismatch between the problem and the chosen technology. Python was effective for prototyping logic and processing data, but it struggled when used as the foundation for a responsive, real-time visual tool.",
+
+      "This led to a key realisation: while the idea of the tool was sound, achieving a smooth and usable workflow required a different approach, particularly in how rendering and user interaction were handled.",
+
+      "Rather than continuing to push against these limitations, the project was rethought and rebuilt using more suitable technologies. This ultimately led to the creation of ChromaForge, which addressed the performance and workflow issues encountered here.",
+
+      "Looking back, this project was less about the final result and more about understanding where the bottlenecks were. It provided a clear direction for what needed to change, and directly influenced the design and technology choices of the system that followed."
     ]
   },
   {

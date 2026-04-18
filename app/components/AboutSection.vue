@@ -11,6 +11,7 @@
                         <span>Flask</span>
                         <span>Vue / Nuxt</span>
                         <span>C++</span>
+                        <span>HTMX</span>
                         <span>Rust</span>
                         <span>Docker</span>
                         <span>Caddy</span>
