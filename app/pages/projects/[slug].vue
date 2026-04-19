@@ -1,10 +1,10 @@
 <script setup>
 import { projects } from '@/data/projects'
 import { useRoute } from 'vue-router'
-import { useFadeIn } from '@/composables/useFadeIn'
-useFadeIn()
 const route = useRoute()
 const project = projects.find(p => p.slug === route.params.slug)
+
+useFadeIn()
 
 if (!project) {
     // Handle case where project is not found, e.g. redirect or show error
@@ -30,11 +30,11 @@ function closeImage(item) {
 
 
 <template>
-    <div class="project-page" :class="`project-page--${project.type}`">
+    <div class="project-page fade-in" :class="`project-page--${project.type}`">
         <div class="project-wrap">
             <NuxtLink to="/" class="back-link">&larr; Back to Projects</NuxtLink>
 
-            <p class="Project-type">{{ project.type }}</p>
+            <p class="project-type">{{ project.type }}</p>
             <p v-if="project.type === 'archive'" class="archive-note">
             Archived project · early full-stack web development
             </p>
