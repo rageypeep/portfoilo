@@ -1,5 +1,8 @@
 <script setup>
 import { projects } from '@/data/projects'
+import { useRoute } from 'vue-router'
+import { useFadeIn } from '@/composables/useFadeIn'
+useFadeIn()
 const route = useRoute()
 const project = projects.find(p => p.slug === route.params.slug)
 
@@ -20,7 +23,11 @@ function openImage(item){
 function closeImage(item) {
     activeImage.value = null
 }
+
+
+
 </script>
+
 
 <template>
     <div class="project-page" :class="`project-page--${project.type}`">
