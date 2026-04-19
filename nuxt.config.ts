@@ -13,7 +13,7 @@ export default defineNuxtConfig({
         { property: 'og:title', content: 'Portfolio - Peter Deacon' },
         { property: 'og:description', content: 'Portfolio of Peter – Full-stack developer & systems builder' },
         { property: 'og:image', content: '/og-image.png' },
-        { property: 'og:url', content: 'https://peterdeacon.dev' },
+        { property: 'og:url', content: 'https://pdsystems.dev' },
         { name: 'twitter:card', content: 'summary_large_image' },
         { name: 'twitter:title', content: 'Portfolio - Peter Deacon' },
         { name: 'twitter:description', content: 'Portfolio of Peter – Full-stack developer & systems builder' },
