@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Group, Material, Mesh } from 'three'
+import { getHeroViewportLayout, heroSceneLayouts } from '../utils/heroSceneLayout'
 
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 const heroRef = ref<HTMLElement | null>(null)
@@ -9,7 +10,7 @@ let cleanupHeroScene: (() => void) | null = null
 const heroTextureSet = {
   shell: '1',
   screen: '1',
-  floor: '1',
+  table: '1',
   nebula: '1'
 }
 
@@ -42,6 +43,7 @@ const featuredProjects = [
 
 onBeforeUnmount(() => {
   cleanupHeroScene?.()
+  cleanupHeroScene = null
 })
 
 onMounted(async () => {
@@ -49,7 +51,22 @@ onMounted(async () => {
   const hero = heroRef.value
   if (!canvas || !hero) return
 
+  const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+  const connection = navigator as Navigator & { connection?: { saveData?: boolean } }
+  const useStaticHero = motionQuery.matches || Boolean(connection.connection?.saveData)
+
+  if (useStaticHero) {
+    hero.classList.add('hero--static')
+    canvas.dataset.static = 'true'
+    cleanupHeroScene = () => {
+      hero.classList.remove('hero--static')
+      delete canvas.dataset.static
+    }
+    return
+  }
+
   const THREE = await import('three')
+  const lowCoreDevice = Boolean(navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4)
 
   const scene = new THREE.Scene()
   const backgroundScene = new THREE.Scene()
@@ -57,8 +74,8 @@ onMounted(async () => {
   const renderer = new THREE.WebGLRenderer({
     canvas,
     alpha: true,
-    antialias: true,
-    powerPreference: 'high-performance'
+    antialias: !lowCoreDevice,
+    powerPreference: lowCoreDevice ? 'default' : 'high-performance'
   })
   const textureLoader = new THREE.TextureLoader()
   const raycaster = new THREE.Raycaster()
@@ -81,6 +98,13 @@ onMounted(async () => {
     new THREE.Vector3(cardBounds.width / 2, cardBounds.height / 2, 0.12),
     new THREE.Vector3(-cardBounds.width / 2, cardBounds.height / 2, 0.12)
   ]
+  let currentLayoutName = getHeroViewportLayout(window.innerWidth)
+  let currentLayout = heroSceneLayouts[currentLayoutName]
+
+  function getRendererPixelRatio() {
+    const layoutCap = lowCoreDevice ? Math.min(currentLayout.pixelRatioCap, 1.25) : currentLayout.pixelRatioCap
+    return Math.min(window.devicePixelRatio || 1, layoutCap)
+  }
 
   function lerp(current: number, target: number, speed: number) {
     return current + (target - current) * speed
@@ -147,13 +171,12 @@ onMounted(async () => {
   }
 
   function makeTexturePaths(kind: keyof typeof heroTextureSet) {
-    const base = kind === 'floor'
-      ? `/textures/floor/${heroTextureSet[kind]}`
-      : `/textures/card-${kind}/${heroTextureSet[kind]}`
+    const textureFolder = kind === 'table' ? 'table' : `card-${kind}`
+    const base = `/textures/${textureFolder}/${heroTextureSet[kind]}`
     return {
       ao: `${base}/ao.png`,
       height: `${base}/height.png`,
-      metallic: kind === 'screen' ? `${base}/matallic.png` : `${base}/metallic.png`,
+      metallic: kind === 'shell' ? `${base}/metalic.png` : `${base}/metallic.png`,
       normal: `${base}/normal.png`,
       smoothness: `${base}/smoothness.png`
     }
@@ -204,10 +227,9 @@ onMounted(async () => {
 
   function resolveCardCollisions() {
     const width = canvas.clientWidth || window.innerWidth
-    const compact = window.innerWidth < 760
-    const edgeInset = compact ? 6 : 30
-    const pushScale = compact ? 2.6 : 4.8
-    const gap = compact ? 8 : 42
+    const edgeInset = currentLayout.collisionEdgeInset
+    const pushScale = currentLayout.collisionPushScale
+    const gap = currentLayout.collisionGap
 
     for (let pass = 0; pass < 2; pass++) {
       const bounds = cardGroups.map(group => getProjectedBounds(group))
@@ -235,7 +257,7 @@ onMounted(async () => {
           if (overlapX <= 0 || overlapY <= 0) continue
 
           const direction = Math.sign(b.centerX - a.centerX) || Math.sign(j - i) || 1
-          const push = Math.min(compact ? 0.18 : 0.32, (overlapX / width) * pushScale)
+          const push = Math.min(currentLayoutName === 'mobile' ? 0.18 : 0.32, (overlapX / width) * pushScale)
           const leftWeight = cardGroups[i].userData.isHovered ? 0.22 : 0.5
           const rightWeight = cardGroups[j].userData.isHovered ? 0.22 : 0.5
 
@@ -246,14 +268,14 @@ onMounted(async () => {
     }
   }
 
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+  renderer.setPixelRatio(getRendererPixelRatio())
   renderer.autoClear = false
   renderer.outputColorSpace = THREE.SRGBColorSpace
   renderer.toneMapping = THREE.ACESFilmicToneMapping
   renderer.toneMappingExposure = 1.18
   renderer.shadowMap.enabled = true
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap
-  camera.position.set(0, 0.2, 8.4)
+  renderer.shadowMap.type = THREE.PCFShadowMap
+  camera.position.set(0, 0.2, currentLayout.cameraZ)
 
   const environmentScene = new THREE.Scene()
   environmentScene.background = new THREE.Color(0x05080b)
@@ -275,14 +297,14 @@ onMounted(async () => {
   })
 
   const pmremGenerator = new THREE.PMREMGenerator(renderer)
-  scene.environment = pmremGenerator.fromScene(environmentScene, 0.08).texture
+  scene.environment = pmremGenerator.fromScene(environmentScene, 0.04).texture
 
   scene.add(new THREE.AmbientLight(0xd7f7ff, 0.62))
 
   const keyLight = new THREE.DirectionalLight(0xffffff, 4.4)
   keyLight.position.set(3.4, 5.2, 5.5)
   keyLight.castShadow = true
-  keyLight.shadow.mapSize.set(1024, 1024)
+  keyLight.shadow.mapSize.set(768, 768)
   keyLight.shadow.camera.near = 1
   keyLight.shadow.camera.far = 16
   keyLight.shadow.camera.left = -6
@@ -303,7 +325,7 @@ onMounted(async () => {
   blueSweepLight.position.set(-3.2, 4.8, 5)
   blueSweepLight.target.position.set(2.6, -0.5, -0.2)
   blueSweepLight.castShadow = true
-  blueSweepLight.shadow.mapSize.set(1024, 1024)
+  blueSweepLight.shadow.mapSize.set(512, 512)
   scene.add(blueSweepLight)
   scene.add(blueSweepLight.target)
 
@@ -315,9 +337,11 @@ onMounted(async () => {
   hoverKeyLight.position.set(-1.2, 1.1, 3.4)
   hoverKeyLight.target.position.set(-0.7, -0.4, 0)
   hoverKeyLight.castShadow = true
-  hoverKeyLight.shadow.mapSize.set(1024, 1024)
+  hoverKeyLight.shadow.mapSize.set(512, 512)
   scene.add(hoverKeyLight)
   scene.add(hoverKeyLight.target)
+  const neutralHoverColor = new THREE.Color(0xffffff)
+  const neutralMouseColor = new THREE.Color(0xe6fffb)
 
   const nebulaPath = `/textures/nebula/${heroTextureSet.nebula}`
   const redNebulaTexture = loadNebulaTexture(`${nebulaPath}/colour-2.jpg`)
@@ -352,6 +376,28 @@ onMounted(async () => {
   blueNebula.renderOrder = -29
   backgroundScene.add(blueNebula)
 
+  function makeRoundStarTexture() {
+    const starCanvas = document.createElement('canvas')
+    starCanvas.width = 64
+    starCanvas.height = 64
+    const ctx = starCanvas.getContext('2d')
+    if (!ctx) return null
+
+    const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32)
+    gradient.addColorStop(0, 'rgba(255,255,255,1)')
+    gradient.addColorStop(0.28, 'rgba(255,255,255,0.82)')
+    gradient.addColorStop(0.62, 'rgba(255,255,255,0.2)')
+    gradient.addColorStop(1, 'rgba(255,255,255,0)')
+    ctx.fillStyle = gradient
+    ctx.fillRect(0, 0, starCanvas.width, starCanvas.height)
+
+    const texture = new THREE.CanvasTexture(starCanvas)
+    texture.colorSpace = THREE.SRGBColorSpace
+    texture.needsUpdate = true
+    return trackTexture(texture)
+  }
+
+  const roundStarTexture = makeRoundStarTexture()
   const starGeometry = new THREE.BufferGeometry()
   const starPositions = new Float32Array(620 * 3)
   for (let i = 0; i < starPositions.length; i += 3) {
@@ -361,10 +407,12 @@ onMounted(async () => {
   }
   starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3))
   const starMaterial = trackMaterial(new THREE.PointsMaterial({
+    map: roundStarTexture ?? undefined,
     color: 0xd7fff7,
-    size: 0.026,
+    size: 0.04,
     transparent: true,
-    opacity: 0.82,
+    opacity: 0.72,
+    blending: THREE.AdditiveBlending,
     depthWrite: false,
     depthTest: false,
     toneMapped: false
@@ -453,19 +501,19 @@ onMounted(async () => {
     return group
   })
 
-  const floorPaths = makeTexturePaths('floor')
-  const floorMaterial = trackMaterial(new THREE.MeshStandardMaterial({
-    color: 0x171d24,
-    aoMap: loadDataMap(floorPaths.ao, 3.2),
-    displacementMap: loadDataMap(floorPaths.height, 3.2),
-    displacementScale: 0.006,
-    metalnessMap: loadDataMap(floorPaths.metallic, 3.2),
-    normalMap: loadDataMap(floorPaths.normal, 3.2),
-    normalScale: new THREE.Vector2(0.62, 0.62),
-    roughnessMap: loadInvertedSmoothnessMap(floorPaths.smoothness, 3.2),
-    metalness: 0.48,
-    roughness: 0.42,
-    envMapIntensity: 0.9
+  const tablePaths = makeTexturePaths('table')
+  const tableMaterial = trackMaterial(new THREE.MeshStandardMaterial({
+    color: 0x252d37,
+    aoMap: loadDataMap(tablePaths.ao, 2.05),
+    displacementMap: loadDataMap(tablePaths.height, 2.05),
+    displacementScale: 0.012,
+    metalnessMap: loadDataMap(tablePaths.metallic, 2.05),
+    normalMap: loadDataMap(tablePaths.normal, 2.05),
+    normalScale: new THREE.Vector2(1.08, 1.08),
+    roughnessMap: loadInvertedSmoothnessMap(tablePaths.smoothness, 2.05),
+    metalness: 0.36,
+    roughness: 0.58,
+    envMapIntensity: 0.72
   }))
 
   const platformGroup = new THREE.Group()
@@ -481,7 +529,7 @@ onMounted(async () => {
   const platformRingGeometry = new THREE.TorusGeometry(platformRadius, 0.11, 16, 128)
   platformGeometries.push(platformTopGeometry, platformBaseGeometry, platformRingGeometry)
 
-  const platformTop = new THREE.Mesh(platformTopGeometry, floorMaterial)
+  const platformTop = new THREE.Mesh(platformTopGeometry, tableMaterial)
   platformTop.rotation.x = -Math.PI / 2
   platformTop.position.y = 0.096
   platformTop.receiveShadow = true
@@ -535,9 +583,9 @@ onMounted(async () => {
     return ring
   }
 
-  makePlatformGlowRing(platformRadius + 0.03, 0.024, 0x7dd3fc, 0.2, 0.176)
-  makePlatformGlowRing(platformRadius - 0.16, 0.018, 0x2dd4bf, 0.14, 0.18)
-  makePlatformGlowRing(platformRadius + 0.2, 0.045, 0x38bdf8, 0.075, 0.172)
+  makePlatformGlowRing(platformRadius + 0.03, 0.024, 0x7dd3fc, 0.16, 0.176)
+  makePlatformGlowRing(platformRadius - 0.16, 0.018, 0x2dd4bf, 0.1, 0.18)
+  makePlatformGlowRing(platformRadius + 0.2, 0.045, 0x38bdf8, 0.055, 0.172)
 
   function makePlatformStrip(length: number, width: number, color: number, opacity: number) {
     const stripGeometry = new THREE.PlaneGeometry(length, width)
@@ -560,8 +608,8 @@ onMounted(async () => {
 
   function addPlatformLine(axis: 'x' | 'z', offset: number, color: number) {
     const length = Math.sqrt(Math.max(0, platformRadius * platformRadius - offset * offset)) * 2
-    const core = makePlatformStrip(length, 0.025, color, 0.78)
-    const glow = makePlatformStrip(length, 0.15, color, 0.18)
+    const core = makePlatformStrip(length, 0.022, color, 0.56)
+    const glow = makePlatformStrip(length, 0.12, color, 0.1)
 
     if (axis === 'x') {
       core.position.z = offset
@@ -764,26 +812,15 @@ onMounted(async () => {
   featuredProjects.forEach(makeCard)
 
   function positionCards() {
-    const compact = window.innerWidth < 760
-    const positions = compact
-      ? [
-          [-1.45, -1.94, 0],
-          [0, -1.3, -0.32],
-          [1.45, -1.94, 0]
-        ]
-      : [
-          [-0.72, -0.48, 0],
-          [2.16, -0.48, 0],
-          [4.92, -0.48, 0]
-        ]
+    const compact = currentLayoutName === 'mobile'
 
     cardGroups.forEach((group, index) => {
-      const [x, y, z] = positions[index]
+      const [x, y, z] = currentLayout.cardPositions[index]
       group.position.set(x, y, z)
       group.userData.baseX = x
       group.userData.baseY = y
       group.userData.baseZ = z
-      group.userData.baseScale = compact ? 0.48 : 0.9
+      group.userData.baseScale = currentLayout.cardScale
       group.userData.baseRotationX = compact ? -0.02 : -0.06
       group.userData.baseRotationY = index === 0 ? 0.1 : index === 2 ? -0.1 : 0
       group.userData.baseRotationZ = index === 1 ? 0 : index === 0 ? -0.035 : 0.035
@@ -816,9 +853,12 @@ onMounted(async () => {
   function resize() {
     const width = canvas.clientWidth || window.innerWidth
     const height = canvas.clientHeight || window.innerHeight
+    currentLayoutName = getHeroViewportLayout(width)
+    currentLayout = heroSceneLayouts[currentLayoutName]
+    renderer.setPixelRatio(getRendererPixelRatio())
     renderer.setSize(width, height, false)
     camera.aspect = width / height
-    camera.position.z = window.innerWidth < 760 ? 9.6 : 8.4
+    camera.position.z = currentLayout.cameraZ
     camera.updateProjectionMatrix()
     positionCards()
     coverBackgroundPlane(redNebula, 1.55)
@@ -852,6 +892,8 @@ onMounted(async () => {
 
   let pointerIsActive = false
   let pointerOverHeroUi = false
+  let heroIsVisible = true
+  let documentIsVisible = !document.hidden
 
   hero.addEventListener('pointermove', onPointerMove)
   hero.addEventListener('pointerleave', onPointerLeave)
@@ -862,9 +904,39 @@ onMounted(async () => {
   let frame = 0
   let running = true
 
-  function animate() {
-    if (!running) return
+  const visibilityObserver = new IntersectionObserver(([entry]) => {
+    heroIsVisible = entry.isIntersecting
+    updateAnimationState()
+  }, { threshold: 0.04 })
+
+  function requestNextFrame() {
+    if (frame || !running || !heroIsVisible || !documentIsVisible) return
     frame = window.requestAnimationFrame(animate)
+  }
+
+  function updateAnimationState() {
+    if (running && heroIsVisible && documentIsVisible) {
+      requestNextFrame()
+      return
+    }
+
+    if (frame) {
+      window.cancelAnimationFrame(frame)
+      frame = 0
+    }
+  }
+
+  function onVisibilityChange() {
+    documentIsVisible = !document.hidden
+    updateAnimationState()
+  }
+
+  document.addEventListener('visibilitychange', onVisibilityChange)
+  visibilityObserver.observe(hero)
+
+  function animate() {
+    frame = 0
+    if (!running || !heroIsVisible || !documentIsVisible) return
     const time = performance.now() * 0.001
 
     raycaster.setFromCamera(pointer, camera)
@@ -901,8 +973,8 @@ onMounted(async () => {
     } else if (pointerIsInsideCanvas) {
       hoverKeyLight.position.lerp(hoverLightPosition.set(pointerWorld.x - 0.4, pointerWorld.y + 0.9, 3.2), 0.08)
       hoverKeyLight.target.position.lerp(pointerWorld, 0.08)
-      hoverKeyLight.color.lerp(new THREE.Color(0xffffff), 0.08)
-      mouseLight.color.lerp(new THREE.Color(0xe6fffb), 0.08)
+      hoverKeyLight.color.lerp(neutralHoverColor, 0.08)
+      mouseLight.color.lerp(neutralMouseColor, 0.08)
     }
 
     mouseLight.intensity = lerp(mouseLight.intensity, pointerIsInsideCanvas ? 2.4 : 0, 0.12)
@@ -913,7 +985,7 @@ onMounted(async () => {
     stars.rotation.y = time * 0.035
     stars.position.x = Math.sin(time * 0.055) * 0.18 - parallaxPointer.x * 0.06
     stars.position.y = Math.cos(time * 0.05) * 0.08 + parallaxPointer.y * 0.04
-    starMaterial.opacity = 0.72 + Math.sin(time * 1.4) * 0.1
+    starMaterial.opacity = 0.62 + Math.sin(time * 1.4) * 0.1
     redNebula.position.x = 0.6 + Math.sin(time * 0.045) * 0.18 - parallaxPointer.x * 0.08
     redNebula.position.y = 0.7 + Math.cos(time * 0.035) * 0.08 + parallaxPointer.y * 0.05
     blueNebula.position.x = 1.2 + Math.sin(time * 0.085) * 0.34 - parallaxPointer.x * 0.22
@@ -927,9 +999,8 @@ onMounted(async () => {
     platformRingMaterial.emissiveIntensity = 0.2 + Math.sin(time * 1.35) * 0.06
 
     lightMotes.forEach((mote, index) => {
-      const compact = window.innerWidth < 760
-      const pathWidth = compact ? 6.8 : 12.4
-      const startX = compact ? -3.4 : -4.6
+      const pathWidth = currentLayout.motePathWidth
+      const startX = currentLayout.moteStartX
       const phase = (time * mote.userData.speed + mote.userData.offset) % 1
       const loop = phase < 0 ? phase + 1 : phase
       const wave = time * 1.35 + index * 1.9
@@ -944,7 +1015,7 @@ onMounted(async () => {
 
       mote.position.set(
         startX + loop * pathWidth,
-        mote.userData.y + Math.sin(wave) * (compact ? 0.1 : 0.18),
+        mote.userData.y + Math.sin(wave) * currentLayout.moteWaveY,
         mote.userData.z + Math.cos(wave * 0.72) * 0.22
       )
       mote.scale.setScalar(0.72 + visibility * pulse * 0.32)
@@ -962,8 +1033,8 @@ onMounted(async () => {
       const isHovered = index === hoveredIndex
       const hasHover = hoveredIndex !== undefined
       const directionFromHovered = hasHover ? Math.sign(index - hoveredIndex) : 0
-      const compact = window.innerWidth < 760
-      const sidePush = compact ? 0.42 : 1.08
+      const compact = currentLayoutName === 'mobile'
+      const sidePush = currentLayout.cardPush
       const hoveredPull = isHovered && index === 0 ? (compact ? 0.12 : 0.28) : isHovered && index === 2 ? (compact ? -0.12 : -0.34) : 0
       const targetX = group.userData.baseX + (isHovered ? hoveredPull : directionFromHovered * sidePush)
       const targetY = group.userData.baseY + (isHovered ? 0.14 : hasHover ? -0.22 : 0) + Math.sin(time + index * 1.7) * 0.055
@@ -1002,9 +1073,10 @@ onMounted(async () => {
     renderer.render(backgroundScene, camera)
     renderer.clearDepth()
     renderer.render(scene, camera)
+    requestNextFrame()
   }
 
-  animate()
+  requestNextFrame()
 
   cleanupHeroScene = () => {
     running = false
@@ -1013,6 +1085,8 @@ onMounted(async () => {
     hero.removeEventListener('pointerleave', onPointerLeave)
     canvas.removeEventListener('pointerdown', onPointerDown)
     window.removeEventListener('resize', resize)
+    document.removeEventListener('visibilitychange', onVisibilityChange)
+    visibilityObserver.disconnect()
     renderer.dispose()
     pmremGenerator.dispose()
     starGeometry.dispose()

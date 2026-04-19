@@ -6,29 +6,40 @@ defineProps({
     github: String,
     type: String,
     tech: Array,
-    slug: String
+    slug: String,
+    hero: String,
+    status: String,
+    featured: Boolean
 })
 </script>
 
 <template>
-    <article class="card fade-in" :data-type="type">
-        <span class="badge">{{ type }}</span>
-
-        <h3>{{ title }}</h3>        
-        <p>{{ description }}</p>
-
-
-        <div class="tags">
-            <span v-for="t in tech" :key="t">{{ t }}</span>
+    <article class="card project-card fade-in" :class="{ 'project-card--featured': featured }" :data-type="type">
+        <NuxtLink v-if="hero && slug" :to="`/projects/${slug}`" class="project-card-media" :aria-label="`View ${title}`">
+            <img :src="hero" :alt="`${title} preview`" loading="lazy">
+        </NuxtLink>
+        <div v-else-if="hero" class="project-card-media" aria-hidden="true">
+            <img :src="hero" :alt="`${title} preview`" loading="lazy">
         </div>
 
-        <div class="links">
-            <NuxtLink v-if="slug" :to="`/projects/${slug}`" class="btn primary">View Details</NuxtLink>
-            <a v-if="link" :href="link" target="_blank" class="btn">Live Site</a>
-            <a v-if="github" :href="github" target="_blank" class="btn">GitHub</a>
-        </div>
+        <div class="project-card-body">
+            <div class="project-card-meta">
+                <span class="badge">{{ type }}</span>
+                <span v-if="status" class="status">{{ status }}</span>
+            </div>
 
-        
-        
+            <h3>{{ title }}</h3>        
+            <p>{{ description }}</p>
+
+            <div class="tags">
+                <span v-for="t in tech" :key="t">{{ t }}</span>
+            </div>
+
+            <div class="links">
+                <NuxtLink v-if="slug" :to="`/projects/${slug}`" class="btn primary">View Details</NuxtLink>
+                <a v-if="link" :href="link" target="_blank" rel="noopener noreferrer" class="btn">Live Site</a>
+                <a v-if="github" :href="github" target="_blank" rel="noopener noreferrer" class="btn">GitHub</a>
+            </div>
+        </div>
     </article>
 </template>

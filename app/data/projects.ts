@@ -18,6 +18,39 @@ export const projects = [
     hero: '/images/chromaforge-hero.png',
     video: '/videos/chromaforge.mp4',
     caption: 'Live workflow demo showing material preview and map controls',
+    seoDescription: 'ChromaForge is a Flask, HTMX and Three.js PBR texture workflow tool for AI-assisted material creation and real-time previewing.',
+    caseStudy: [
+      {
+        label: 'Problem',
+        title: 'Texture work needed a faster loop',
+        body: 'The original Python prototype proved the idea, but real-time previewing and iteration were too slow for a practical creative workflow. ChromaForge reframed the tool as a web app where generation, map controls, and previewing sit in one focused interface.'
+      },
+      {
+        label: 'Approach',
+        title: 'Server-driven controls with a real-time preview',
+        body: 'The app keeps the core workflow simple: Flask handles the backend, HTMX keeps interface updates light, and Three.js gives the user an immediate material preview without turning the whole product into a heavy SPA.'
+      },
+      {
+        label: 'Result',
+        title: 'A better foundation for creative tooling',
+        body: 'The rebuild moved the project away from a useful script and toward a maintainable product: clearer controls, better feedback, a stronger visual pipeline, and room to keep improving map generation quality.'
+      }
+    ],
+    architecture: {
+      title: 'ChromaForge material pipeline',
+      description: 'A server-rendered creative tool with AI-assisted generation, map processing, and an interactive Three.js material preview.',
+      nodes: [
+        { label: 'Prompt + controls', detail: 'User input, presets, map options, and generation settings.' },
+        { label: 'Flask workflow', detail: 'Coordinates requests, file handling, and texture processing steps.' },
+        { label: 'Texture outputs', detail: 'Albedo, roughness, normal, height, and supporting PBR maps.' },
+        { label: 'Three.js preview', detail: 'Material updates are inspected in-browser before export or reuse.' }
+      ],
+      flows: [
+        'HTMX keeps controls fast without forcing a large client-side state model.',
+        'The preview loop exposes quality issues early, before the texture set is treated as finished.',
+        'The project evolved directly from the Texture Map Generator prototype.'
+      ]
+    },
     features: [
     'AI-assisted texture generation',
     'PBR material pipeline workflow',
@@ -36,7 +69,7 @@ export const projects = [
     description: 'A fast note-sharing web app focused on simple publishing and clean writing.',
     link: 'https://jotspot.io/',
     type: 'webapp',
-    tech: ['Python', 'Flask', 'HTMX', 'Publishing', 'Notes', 'Auto-saving'],
+    tech: ['Python', 'Flask', 'HTMX', 'PostgreSQL', 'Publishing', 'Notes', 'Auto-saving'],
     slug: 'jotspot',
     content: [
         'JotSpot is a web app for sharing notes quickly and easily.',
@@ -48,6 +81,39 @@ export const projects = [
 
     ],
     hero: '/images/jotspot-hero.png',
+    seoDescription: 'JotSpot is a Flask, HTMX and PostgreSQL note publishing platform with auto-save, public sharing, comments, likes, and CLI publishing.',
+    caseStudy: [
+      {
+        label: 'Problem',
+        title: 'Publishing notes should not feel like managing a CMS',
+        body: 'JotSpot focuses on reducing friction: open the editor, write, auto-save, publish, and share. The product direction came from learning where the earlier Simple Pages prototype felt too heavy for a writing-first tool.'
+      },
+      {
+        label: 'Approach',
+        title: 'Server-rendered interaction instead of SPA overhead',
+        body: 'Flask owns routing, persistence, authentication, and permissions, with PostgreSQL storing user-owned notes, metadata, comments, and publishing state. HTMX is used where the interface needs to update quickly, such as previews, saving states, and smaller interaction loops.'
+      },
+      {
+        label: 'Result',
+        title: 'A focused publishing system with useful developer edges',
+        body: 'The CLI path and developer options make it more than a basic note app: it can support terminal workflows, logs, API-style publishing, and quick sharing without losing the clean writing experience.'
+      }
+    ],
+    architecture: {
+      title: 'JotSpot publishing flow',
+      description: 'A Flask, HTMX and PostgreSQL publishing system built around low-friction writing, auto-save, public discovery, and optional CLI workflows.',
+      nodes: [
+        { label: 'Editor', detail: 'Markdown writing, preview, and auto-save feedback.' },
+        { label: 'Flask app', detail: 'Routes, auth, permissions, pages, comments, and publishing logic.' },
+        { label: 'PostgreSQL', detail: 'User-owned jots, metadata, likes, comments, and API tokens.' },
+        { label: 'Public + CLI', detail: 'Shared pages, explore views, and terminal publishing paths.' }
+      ],
+      flows: [
+        'Auto-save keeps the writing loop fast while Flask remains the source of truth.',
+        'The CLI gives the system a practical path for logs, automation, and developer workflows.',
+        'The product is the cleaner rebuild of ideas first explored in Simple Pages.'
+      ]
+    },
     features: [
       'Instant saving and live updates',
       'CLI Interface leting you push logs from command line',
@@ -98,6 +164,39 @@ export const projects = [
     hero: '/images/rageypeep-hero.png',
     video: '/videos/rageypeep.mp4',
     caption: 'A demo of the rageypeep.gg platform, showcasing automatic game page generation, custom content and dynamic updates.',
+    seoDescription: 'rageypeep.gg is a self-hosted Flask and HTMX gaming platform using Steam API data, cron jobs, admin tools, and generated game pages.',
+    caseStudy: [
+      {
+        label: 'Problem',
+        title: 'A game log needed automation and manual control',
+        body: 'The goal was to avoid hand-building every game page while still allowing custom pages, screenshots, reviews, and notes. Steam data provides the seed, while the admin tools keep the final result editable.'
+      },
+      {
+        label: 'Approach',
+        title: 'Live data feeds into a server-rendered content system',
+        body: 'The app uses Steam authentication and API data to generate structured pages, then relies on Flask, HTMX, and admin workflows to refine content without requiring a complex client application.'
+      },
+      {
+        label: 'Result',
+        title: 'A self-hosted content platform for a real hobby workflow',
+        body: 'rageypeep.gg became a practical example of the wider stack: external APIs, scheduled background jobs, admin tooling, generated content, custom theming, Docker deployment, and live maintenance.'
+      }
+    ],
+    architecture: {
+      title: 'rageypeep.gg data loop',
+      description: 'A self-hosted Flask platform that turns Steam activity into generated game pages, then lets the admin layer refine the result.',
+      nodes: [
+        { label: 'Steam login + API', detail: 'Authentication, owned games, recent activity, and source metadata.' },
+        { label: 'Cron sync', detail: 'Scheduled refresh jobs update activity and detect useful changes.' },
+        { label: 'Flask admin', detail: 'Content editing, page generation, theme controls, and manual overrides.' },
+        { label: 'Game pages', detail: 'Published reviews, screenshots, notes, and generated layouts.' }
+      ],
+      flows: [
+        'Automation creates the first pass, but the admin tools keep the pages personal.',
+        'HTMX partials support dynamic admin actions without turning the app into a SPA.',
+        'The system runs as part of the same Docker and Caddy self-hosted environment as the portfolio.'
+      ]
+    },
     content: [
       "rageypeep.gg is a custom-built web application designed to track playthroughs, reviews and personal game logs, combining automation with flexible content creation.",
 
