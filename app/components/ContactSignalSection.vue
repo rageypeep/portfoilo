@@ -46,7 +46,7 @@
                             <strong>rageypeep</strong>
                         </span>
                     </a>
-                    <a href="https://www.linkedin.com/in/peter-deacon-962797404/" target="_blank" rel="noopener noreferrer" class="signal-route">
+                    <a href="https://www.linkedin.com/in/petedeacon" target="_blank" rel="noopener noreferrer" class="signal-route">
                         <span class="signal-route-icon" aria-hidden="true">
                             <img src="/images/icons/linkedin.png" alt="">
                         </span>

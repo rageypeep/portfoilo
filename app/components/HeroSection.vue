@@ -1296,6 +1296,17 @@ onMounted(async () => {
         <a href="#about" class="btn">About Me</a>
         <a href="https://github.com/rageypeep" target="_blank" rel="noopener noreferrer" class="btn">GitHub</a>
       </div>
+
+      <p class="hero-source">
+        This portfolio is open source:
+        <a href="https://github.com/rageypeep/portfoilo" target="_blank" rel="noopener noreferrer">
+          view the Nuxt build
+        </a>
+        <span>
+          Hero textures were made with
+          <a href="/projects/chromaforge">ChromaForge</a>.
+        </span>
+      </p>
     </div>
   </section>
 </template>
