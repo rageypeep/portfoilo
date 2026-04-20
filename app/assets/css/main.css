@@ -965,6 +965,7 @@ h2 {
 .about-container {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+  align-items: start;
   gap: 1rem;
 }
 
@@ -1006,6 +1007,7 @@ h2 {
 
 .about-story {
   padding: 2rem 2.1rem 2.1rem;
+  align-self: start;
 }
 
 .about-lead {
@@ -1030,83 +1032,297 @@ h2 {
   margin-bottom: 0;
 }
 
-.about-system {
-  display: flex;
-  flex-direction: column;
-  min-height: 100%;
-  padding: 1.35rem;
+.about-host-map {
+  position: relative;
+  grid-column: 1 / -1;
+  margin-top: 0;
+  padding: 1.1rem;
+  border: 1px solid rgba(45, 212, 191, 0.26);
+  border-radius: 8px;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(45, 212, 191, 0.11), transparent 48%),
+    repeating-linear-gradient(0deg, rgba(125, 211, 252, 0.055) 0 1px, transparent 1px 10px),
+    rgba(5, 10, 14, 0.66);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 34px rgba(45, 212, 191, 0.08);
 }
 
-.about-system-header {
+.about-host-map::before,
+.about-host-map::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.about-host-map::before {
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(125, 211, 252, 0.16), transparent 28%),
+    linear-gradient(90deg, transparent, rgba(45, 212, 191, 0.14), transparent);
+  opacity: 0.52;
+}
+
+.about-host-map::after {
+  top: 4.7rem;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(45, 212, 191, 0.78), transparent);
+  box-shadow: 0 0 16px rgba(45, 212, 191, 0.38);
+}
+
+.about-host-map-header,
+.host-map-flow,
+.host-map-services,
+.host-map-support {
   position: relative;
   z-index: 1;
+}
+
+.about-host-map-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 1.35rem;
+  margin-bottom: 1rem;
   color: #7dd3fc;
   font-size: 0.78rem;
   text-transform: uppercase;
 }
 
-.about-system-header strong {
+.about-host-map-header strong {
   color: #d1fae5;
   font-size: 0.85rem;
+  text-align: right;
 }
 
-.about-pipeline {
-  position: relative;
-  z-index: 1;
+.host-map-flow {
   display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.65rem;
-  margin-bottom: 1.25rem;
 }
 
-.about-pipeline span {
+.host-map-node,
+.host-map-services a,
+.host-map-services div {
   position: relative;
-  padding: 0.8rem 0.9rem 0.8rem 1.05rem;
+  min-width: 0;
   border: 1px solid rgba(125, 211, 252, 0.22);
   border-radius: 8px;
-  background: rgba(8, 11, 15, 0.54);
-  color: #eef2f7;
+  background:
+    linear-gradient(180deg, rgba(45, 212, 191, 0.1), rgba(8, 11, 15, 0)),
+    rgba(5, 8, 11, 0.72);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
-.about-pipeline span::before {
+.host-map-node {
+  padding: 0.85rem 0.9rem;
+}
+
+.host-map-node:not(:last-child)::after {
   content: "";
   position: absolute;
-  left: 0;
-  top: 0.65rem;
-  bottom: 0.65rem;
-  width: 3px;
+  top: 50%;
+  right: -0.7rem;
+  width: 0.7rem;
+  height: 1px;
   background: #2dd4bf;
-  box-shadow: 0 0 18px rgba(45, 212, 191, 0.55);
+  box-shadow: 0 0 14px rgba(45, 212, 191, 0.58);
 }
 
-.about-signals {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  gap: 0.75rem;
-  margin: 0;
+.host-map-node--host {
+  border-color: rgba(245, 158, 11, 0.34);
+  background:
+    linear-gradient(180deg, rgba(245, 158, 11, 0.13), rgba(8, 11, 15, 0)),
+    rgba(5, 8, 11, 0.72);
 }
 
-.about-signals div {
-  padding: 0.85rem 0;
-  border-top: 1px solid rgba(125, 211, 252, 0.16);
-}
-
-.about-signals dt {
-  margin-bottom: 0.25rem;
+.host-map-node span,
+.host-map-services span {
+  display: block;
+  margin-bottom: 0.35rem;
   color: #2dd4bf;
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   text-transform: uppercase;
 }
 
-.about-signals dd {
+.host-map-node--host span {
+  color: #f59e0b;
+}
+
+.host-map-node strong,
+.host-map-services strong {
+  display: block;
+  color: #eef2f7;
+  font-size: 1rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.host-map-services {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.host-map-services a,
+.host-map-services div {
+  display: block;
+  min-height: 5.6rem;
+  padding: 0.9rem;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.host-map-services a::before,
+.host-map-services div::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.75rem;
+  bottom: 0.75rem;
+  width: 3px;
+  background: #2dd4bf;
+  box-shadow: 0 0 14px rgba(45, 212, 191, 0.54);
+}
+
+.host-map-services a:hover {
+  transform: translateY(-2px);
+  border-color: rgba(45, 212, 191, 0.72);
+  background:
+    linear-gradient(180deg, rgba(45, 212, 191, 0.16), rgba(8, 11, 15, 0)),
+    rgba(5, 8, 11, 0.74);
+}
+
+.host-map-support {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.8rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(125, 211, 252, 0.14);
+}
+
+.host-map-support span {
+  padding: 0.35rem 0.55rem;
+  border: 1px solid rgba(125, 211, 252, 0.18);
+  border-radius: 8px;
+  background: rgba(8, 11, 15, 0.54);
+  color: #cbd5e1;
+  font-size: 0.72rem;
+}
+
+.about-side {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+  width: 100%;
+}
+
+.about-portrait {
   margin: 0;
-  color: #dbe4f0;
-  line-height: 1.55;
+  padding: 1rem;
+}
+
+.about-portrait-frame {
+  position: relative;
+  z-index: 1;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border: 1px solid rgba(125, 211, 252, 0.28);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.34);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 0 34px rgba(45, 212, 191, 0.12);
+}
+
+.about-portrait-frame::before,
+.about-portrait-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.about-portrait-frame::before {
+  z-index: 1;
+  background:
+    linear-gradient(180deg, transparent 50%, rgba(8, 11, 15, 0.42)),
+    linear-gradient(90deg, rgba(45, 212, 191, 0.18), transparent 46%),
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.055) 0 1px, transparent 1px 9px);
+  mix-blend-mode: screen;
+  opacity: 0.48;
+}
+
+.about-portrait-frame::after {
+  z-index: 2;
+  border-left: 4px solid #2dd4bf;
+  box-shadow:
+    inset 0 0 38px rgba(45, 212, 191, 0.12),
+    inset 0 -1px 0 rgba(245, 158, 11, 0.38);
+}
+
+.about-portrait img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: 54% 34%;
+  filter: saturate(0.88) contrast(1.08) brightness(0.88);
+}
+
+.about-portrait figcaption {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 0.3rem;
+  margin-top: 0.9rem;
+}
+
+.about-portrait figcaption span {
+  color: #2dd4bf;
+  font-size: 0.78rem;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.about-portrait figcaption strong {
+  color: #eef2f7;
+  font-size: 1.08rem;
+  line-height: 1.35;
+}
+
+@media (min-width: 921px) {
+  .about-container {
+    align-items: stretch;
+  }
+
+  .about-story {
+    align-self: stretch;
+  }
+
+  .about-side {
+    display: block;
+    align-self: stretch;
+    height: 100%;
+  }
+
+  .about-portrait {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    height: 100%;
+    min-height: 0;
+  }
+
+  .about-portrait-frame {
+    height: 100%;
+    min-height: 0;
+    aspect-ratio: auto;
+  }
 }
 
 .about-tech {
@@ -1962,6 +2178,14 @@ h2 {
     grid-template-columns: 1fr;
   }
 
+  .about-side {
+    max-width: 30rem;
+  }
+
+  .host-map-services {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .building-wrap {
     grid-template-columns: 1fr;
   }
@@ -2082,8 +2306,12 @@ h2 {
     font-size: 2.35rem;
   }
 
+  .about-side {
+    grid-template-columns: 1fr;
+  }
+
   .about-story,
-  .about-system,
+  .about-portrait,
   .building-copy,
   .building-panel,
   .signal-copy,
@@ -2117,6 +2345,28 @@ h2 {
 
   .about-lead {
     font-size: 1.1rem;
+  }
+
+  .about-portrait-frame {
+    aspect-ratio: 4 / 4.6;
+  }
+
+  .about-host-map-header {
+    display: grid;
+  }
+
+  .about-host-map-header strong {
+    text-align: left;
+  }
+
+  .host-map-flow,
+  .host-map-services {
+    grid-template-columns: 1fr;
+  }
+
+  .host-map-node:not(:last-child)::after,
+  .about-host-map::after {
+    display: none;
   }
 
   .project-page h1 {
@@ -2211,7 +2461,8 @@ h2 {
   .project-card:hover .project-card-media img,
   .gallery-item:hover,
   .gallery-item:focus-visible,
-  .signal-route:hover {
+  .signal-route:hover,
+  .host-map-services a:hover {
     transform: none;
   }
 

@@ -265,7 +265,7 @@ export const projects = [
     description: 'A custom-built e-commerce platform with a full admin backend, product management and flexible shipping logic.',
     link: 'https://ultimaprops.shop/',
     type: 'webapp',
-    proofMetric: 'Nine-screen commerce workflow covering storefront, admin, orders, Stripe, and downloads.',
+    proofMetric: 'E-commerce workflow covering storefront, admin, orders, Stripe, and downloads.',
     tech: ['Python', 'Flask', 'HTMX', 'Stripe API', 'Custom CMS'],
     slug: 'ultimaprops',
     status: "In Development / Demo",
