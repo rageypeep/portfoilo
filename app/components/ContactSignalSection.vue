@@ -7,6 +7,9 @@
                 <p>
                     I work best on full-stack tools, server-rendered apps, self-hosted services, automation, and rendering-heavy experiments where the whole system matters.
                 </p>
+                <p class="signal-availability">
+                    Available for focused full-stack builds, internal tools, self-hosted systems, and performance-minded web apps.
+                </p>
             </div>
 
             <div class="signal-panel" aria-label="Contact options">

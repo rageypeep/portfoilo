@@ -9,6 +9,7 @@ defineProps({
     slug: String,
     hero: String,
     status: String,
+    proofMetric: String,
     featured: Boolean
 })
 </script>
@@ -30,6 +31,10 @@ defineProps({
 
             <h3>{{ title }}</h3>        
             <p>{{ description }}</p>
+
+            <p v-if="proofMetric" class="project-proof">
+                {{ proofMetric }}
+            </p>
 
             <div class="tags">
                 <span v-for="t in tech" :key="t">{{ t }}</span>

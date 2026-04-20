@@ -4,6 +4,8 @@ export const projects = [
     description: 'A PBR texture pipeline tool with AI integration, designed to make material creation faster, smoother and more user-friendly.',
     link: 'https://chromaforge.duckdns.org/',
     type: 'webapp',
+    status: 'Currently building',
+    proofMetric: 'Rebuilt from a Python prototype into a Flask, HTMX and Three.js material workflow.',
     tech: ['Python', 'Flask', 'Three.js', 'Texture Generation', 'HTMX', 'AI Integration'],
     slug: 'chromaforge',
     content: [
@@ -69,6 +71,8 @@ export const projects = [
     description: 'A fast note-sharing web app focused on simple publishing and clean writing.',
     link: 'https://jotspot.io/',
     type: 'webapp',
+    status: 'Live',
+    proofMetric: 'PostgreSQL-backed publishing with auto-save, comments, likes, and CLI token workflows.',
     tech: ['Python', 'Flask', 'HTMX', 'PostgreSQL', 'Publishing', 'Notes', 'Auto-saving'],
     slug: 'jotspot',
     content: [
@@ -159,6 +163,8 @@ export const projects = [
     description: "A custom-built gaming platform for tracking playthroughs, reviews and automatically generating game pages from live data.",
     link: 'https://rageypeep.gg/',
     type: 'webapp',
+    status: 'Live',
+    proofMetric: 'Steam API data, cron sync, admin tools, and generated game pages running self-hosted.',
     tech: ['Python', 'Flask', 'HTMX', 'Steam API', 'Auto-build', 'Cronjobs'],
     slug: 'rageypeep',
     hero: '/images/rageypeep-hero.png',
@@ -259,6 +265,7 @@ export const projects = [
     description: 'A custom-built e-commerce platform with a full admin backend, product management and flexible shipping logic.',
     link: 'https://ultimaprops.shop/',
     type: 'webapp',
+    proofMetric: 'Nine-screen commerce workflow covering storefront, admin, orders, Stripe, and downloads.',
     tech: ['Python', 'Flask', 'HTMX', 'Stripe API', 'Custom CMS'],
     slug: 'ultimaprops',
     status: "In Development / Demo",
@@ -333,6 +340,8 @@ export const projects = [
     title: 'Planetary Voxel Engine',
     description: 'A voxel-based planetary engine built in C++ with DirectX 12, featuring procedural spherical worlds, chunk streaming and real-time terrain deformation.',
     type: 'engine',
+    status: 'Prototype',
+    proofMetric: 'DirectX 12 planetary voxel tests with chunk streaming and real-time terrain deformation.',
     tech: ['C++', 'DirectX 12', 'Procedural Generation', 'Chunk Streaming', '3D Graphics', 'Voxel Manipulation'],
     slug: 'minecraft-in-space',
     challenges: [
@@ -407,6 +416,8 @@ export const projects = [
     title: 'An ARPG Prototype',
     description: 'An isometric ARPG built in C++ with custom rendering, terrain deformation, procedural level generation and combat mechanics.',
     type: 'engine',
+    status: 'Prototype',
+    proofMetric: 'Multiple C++ engine iterations covering procedural levels, terrain deformation, and custom tools.',
     tech: ['C++', 'Custom Renderer', 'Procedural Generation', 'Combat Mechanics', 'Custom Tools', '3D Graphics'],
     slug: 'arpg',
     content: [
@@ -474,6 +485,7 @@ export const projects = [
     title: 'Aquaforge',
     description: 'A Rust + Bevy prototype using real ocean heightmap data to simulate large-scale water environments.',
     type: 'experimental',
+    status: 'Archive',
     tech: ['Rust', 'Bevy', 'Ocean Simulation', 'Heightmap Data', '3D Graphics'],
     slug: 'aquaforge',
     content: [
@@ -520,6 +532,7 @@ export const projects = [
 
     github: "https://github.com/rageypeep/simple-pages",
     type: "experimental",
+    status: "Archive",
 
     tech: [
       "React",
@@ -578,6 +591,7 @@ export const projects = [
 
     github: "https://github.com/rageypeep/Texture-Map-Generator/blob/main/MapMaker.py",
     type: "experimental",
+    status: "Archive",
 
     tech: [
       "Python",
@@ -634,6 +648,7 @@ export const projects = [
 
     github: "https://github.com/rageypeep/testing/blob/main/src/components/VideoPlayer.js",
     type: "fun",
+    status: "Experiment",
     tech: [
       "React",
       "JavaScript",
@@ -672,6 +687,7 @@ export const projects = [
 
     github: "https://github.com/rageypeep/testing/blob/main/src/components/Voxel.js",
     type: "fun",
+    status: "Experiment",
     tech: [
       "React",
       "Three.js",
@@ -709,6 +725,7 @@ export const projects = [
     description: "An early full-stack web project integrating a retail EPOS system with a dynamic ASP backend.",
     link: "https://web.archive.org/web/20031224144306/http://81.130.209.148:8080/",
     type: "archive",
+    status: "Archive",
     tech: ["Classic ASP", "HTML", "EPOS Integration", "MS Access"],
     hero: '/images/itgames-hero.png',
     content: [

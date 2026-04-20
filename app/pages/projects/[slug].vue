@@ -64,6 +64,9 @@ function closeImage() {
                     <p v-if="project.status" class="project-status">{{ project.status }}</p>
                     <h1>{{ project.title }}</h1>
                     <p class="project-intro">{{ project.description }}</p>
+                    <p v-if="project.proofMetric" class="project-proof project-proof--hero">
+                        {{ project.proofMetric }}
+                    </p>
                     <div v-if="headerTags.length" class="tags">
                         <span v-for="t in headerTags" :key="t">{{ t }}</span>
                     </div>
