@@ -2166,6 +2166,15 @@ h2 {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+
   html {
     scroll-behavior: auto;
   }
@@ -2182,11 +2191,34 @@ h2 {
 
   .hero-canvas {
     display: none;
+    transform: none;
   }
 
   .hero-loader-panel::before,
   .hero-loader-track span {
     animation: none;
+  }
+
+  .fade-in,
+  .fade-in.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  .back-to-top--visible,
+  .btn:hover,
+  .project-card:hover,
+  .project-card:hover .project-card-media img,
+  .gallery-item:hover,
+  .gallery-item:focus-visible,
+  .signal-route:hover {
+    transform: none;
+  }
+
+  .project-card::before,
+  .project-card:hover::before {
+    opacity: 0;
+    transform: none;
   }
 
   .hero::before {

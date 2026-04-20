@@ -24,7 +24,8 @@ export default defineNuxtConfig({
         { name: 'theme-color', content: '#070b0f' }
       ],
       link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+        { rel: 'icon', type: 'image/svg+xml', sizes: 'any', href: '/favicon.svg?v=3' },
+        { rel: 'shortcut icon', type: 'image/svg+xml', href: '/favicon.svg?v=3' }
       ]
     }
   }

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="PD Systems">
+  <defs>
+    <linearGradient id="bg" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0d1b22"/>
+      <stop offset="0.58" stop-color="#071016"/>
+      <stop offset="1" stop-color="#02070a"/>
+    </linearGradient>
+    <linearGradient id="teal" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7dd3fc"/>
+      <stop offset="0.48" stop-color="#2dd4bf"/>
+      <stop offset="1" stop-color="#14b8a6"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="14" y1="50" x2="54" y2="16" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f59e0b"/>
+      <stop offset="1" stop-color="#fef3c7"/>
+    </linearGradient>
+    <filter id="softGlow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="2.2" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.18 0 0 0 0 0.83 0 0 0 0 0.74 0 0 0 0.72 0"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+  <path d="M12 49V15h40" fill="none" stroke="#17313a" stroke-width="2"/>
+  <path d="M17 15h35v34H17" fill="none" stroke="#0f2730" stroke-width="1"/>
+  <path d="M9 48c13-18 31-29 47-34" fill="none" stroke="url(#gold)" stroke-width="2.4" stroke-linecap="round" opacity="0.82"/>
+  <path d="M12 50c14-16 29-25 44-31" fill="none" stroke="#7dd3fc" stroke-width="1.2" stroke-linecap="round" opacity="0.46"/>
+
+  <g filter="url(#softGlow)">
+    <path d="M17 46V18h16c6.8 0 11 3.9 11 10s-4.2 10-11 10h-7v8h-9Zm9-15h6.8c2.2 0 3.6-1.1 3.6-3s-1.4-3-3.6-3H26v6Z" fill="url(#teal)"/>
+    <path d="M39 46V18h5.5C52 18 57 23.4 57 32s-5 14-12.5 14H39Zm6-7h.1c3 0 5.2-2.4 5.2-7s-2.2-7-5.2-7H45v14Z" fill="#e8fbff"/>
+  </g>
+
+  <circle cx="51.5" cy="16.5" r="2.2" fill="#fef3c7"/>
+  <circle cx="13.5" cy="50.5" r="1.7" fill="#2dd4bf"/>
+  <circle cx="47" cy="51" r="1.2" fill="#7dd3fc" opacity="0.8"/>
+  <rect x="1" y="1" width="62" height="62" rx="13" fill="none" stroke="#2dd4bf" stroke-opacity="0.58" stroke-width="2"/>
+</svg>

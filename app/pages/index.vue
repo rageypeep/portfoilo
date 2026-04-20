@@ -4,6 +4,7 @@ import CurrentlyBuildingSection from '@/components/CurrentlyBuildingSection.vue'
 useFadeIn();
 
 const siteUrl = 'https://pdsystems.dev'
+const socialImage = `${siteUrl}/og-image.png`
 const homeDescription = 'Portfolio of Peter Deacon: full-stack Flask, HTMX, Nuxt, Docker, Caddy, and C++ systems work.'
 
 useSeoMeta({
@@ -11,13 +12,13 @@ useSeoMeta({
     description: homeDescription,
     ogTitle: 'Peter Deacon - Full-stack systems portfolio',
     ogDescription: homeDescription,
-    ogImage: `${siteUrl}/images/chromaforge-hero.png`,
+    ogImage: socialImage,
     ogUrl: siteUrl,
     ogType: 'website',
     twitterCard: 'summary_large_image',
     twitterTitle: 'Peter Deacon - Full-stack systems portfolio',
     twitterDescription: homeDescription,
-    twitterImage: `${siteUrl}/images/chromaforge-hero.png`
+    twitterImage: socialImage
 })
 
 useHead({
@@ -33,9 +34,11 @@ function updateBackToTop() {
 }
 
 function scrollBackToTop() {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
     window.scrollTo({
         top: 0,
-        behavior: 'smooth'
+        behavior: prefersReducedMotion ? 'auto' : 'smooth'
     })
 }
 

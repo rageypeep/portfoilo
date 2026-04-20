@@ -18,7 +18,7 @@ const activeImage = ref(null)
 const headerTags = computed(() => project.tags?.length ? project.tags : project.tech ?? [])
 const siteUrl = 'https://pdsystems.dev'
 const projectUrl = `${siteUrl}/projects/${project.slug}`
-const projectImage = project.hero?.startsWith('http') ? project.hero : `${siteUrl}${project.hero || '/images/chromaforge-hero.png'}`
+const projectImage = project.hero?.startsWith('http') ? project.hero : `${siteUrl}${project.hero || '/og-image.png'}`
 const projectDescription = project.seoDescription || project.description
 
 useSeoMeta({

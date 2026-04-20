@@ -1,17 +1,32 @@
 export function useFadeIn() {
     const elements = ref<HTMLElement[]>([])
+    let observer: IntersectionObserver | null = null
 
     onMounted(() => {
         elements.value = Array.from(document.querySelectorAll('.fade-in'))
-        const observer = new IntersectionObserver((entries) => {
+
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+        if (prefersReducedMotion) {
+            elements.value.forEach((el) => el.classList.add('visible'))
+            return
+        }
+
+        observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible')
+                    observer?.unobserve(entry.target)
                 }
             })
         }, { threshold: 0.1 })
 
         elements.value.forEach((el) => observer.observe(el))
+    })
+
+    onBeforeUnmount(() => {
+        observer?.disconnect()
+        observer = null
     })
 }
 
