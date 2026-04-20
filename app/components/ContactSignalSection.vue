@@ -17,16 +17,40 @@
 
                 <div class="signal-routes">
                     <a href="mailto:hello@pdsystems.dev" class="signal-route">
-                        <span>Email</span>
-                        <strong>hello@pdsystems.dev</strong>
+                        <span class="signal-route-icon" aria-hidden="true">
+                            <img src="/images/icons/message.png" alt="">
+                        </span>
+                        <span class="signal-route-copy">
+                            <span>Email</span>
+                            <strong>hello@pdsystems.dev</strong>
+                        </span>
+                    </a>
+                    <a href="https://x.com/pd_systems" target="_blank" rel="noopener noreferrer" class="signal-route">
+                        <span class="signal-route-icon" aria-hidden="true">
+                            <img src="/images/icons/x.png" alt="">
+                        </span>
+                        <span class="signal-route-copy">
+                            <span>X</span>
+                            <strong>@pd_systems</strong>
+                        </span>
                     </a>
                     <a href="https://github.com/rageypeep" target="_blank" rel="noopener noreferrer" class="signal-route">
-                        <span>GitHub</span>
-                        <strong>rageypeep</strong>
+                        <span class="signal-route-icon" aria-hidden="true">
+                            <img src="/images/icons/github.png" alt="">
+                        </span>
+                        <span class="signal-route-copy">
+                            <span>GitHub</span>
+                            <strong>rageypeep</strong>
+                        </span>
                     </a>
-                    <a href="#projects" class="signal-route">
-                        <span>Work</span>
-                        <strong>Selected Systems</strong>
+                    <a href="https://www.linkedin.com/in/peter-deacon-962797404/" target="_blank" rel="noopener noreferrer" class="signal-route">
+                        <span class="signal-route-icon" aria-hidden="true">
+                            <img src="/images/icons/linkedin.png" alt="">
+                        </span>
+                        <span class="signal-route-copy">
+                            <span>LinkedIn</span>
+                            <strong>Peter Deacon</strong>
+                        </span>
                     </a>
                 </div>
             </div>

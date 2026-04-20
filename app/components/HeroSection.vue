@@ -4,6 +4,7 @@ import { getHeroViewportLayout, heroSceneLayouts } from '../utils/heroSceneLayou
 
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 const heroRef = ref<HTMLElement | null>(null)
+const heroSceneReady = ref(false)
 const router = useRouter()
 let cleanupHeroScene: (() => void) | null = null
 
@@ -11,6 +12,7 @@ const heroTextureSet = {
   shell: '1',
   screen: '1',
   table: '1',
+  tableRing: '1',
   nebula: '1'
 }
 
@@ -50,6 +52,7 @@ onMounted(async () => {
   const canvas = canvasRef.value
   const hero = heroRef.value
   if (!canvas || !hero) return
+  heroSceneReady.value = false
 
   const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
   const connection = navigator as Navigator & { connection?: { saveData?: boolean } }
@@ -57,6 +60,9 @@ onMounted(async () => {
 
   if (useStaticHero) {
     hero.classList.add('hero--static')
+    window.requestAnimationFrame(() => {
+      heroSceneReady.value = true
+    })
     canvas.dataset.static = 'true'
     cleanupHeroScene = () => {
       hero.classList.remove('hero--static')
@@ -71,13 +77,14 @@ onMounted(async () => {
   const scene = new THREE.Scene()
   const backgroundScene = new THREE.Scene()
   const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100)
+  const loadingManager = new THREE.LoadingManager()
   const renderer = new THREE.WebGLRenderer({
     canvas,
     alpha: true,
     antialias: !lowCoreDevice,
     powerPreference: lowCoreDevice ? 'default' : 'high-performance'
   })
-  const textureLoader = new THREE.TextureLoader()
+  const textureLoader = new THREE.TextureLoader(loadingManager)
   const raycaster = new THREE.Raycaster()
   const pointer = new THREE.Vector2()
   const parallaxPointer = new THREE.Vector2()
@@ -100,6 +107,28 @@ onMounted(async () => {
   ]
   let currentLayoutName = getHeroViewportLayout(window.innerWidth)
   let currentLayout = heroSceneLayouts[currentLayoutName]
+  let renderedFrameCount = 0
+  let assetsLoaded = false
+  let revealTimer: number | null = null
+
+  function revealHeroScene() {
+    if (renderedFrameCount < 2 || !assetsLoaded || heroSceneReady.value || revealTimer) return
+
+    revealTimer = window.setTimeout(() => {
+      heroSceneReady.value = true
+      revealTimer = null
+    }, 120)
+  }
+
+  loadingManager.onLoad = () => {
+    assetsLoaded = true
+    revealHeroScene()
+  }
+
+  const fallbackRevealTimer = window.setTimeout(() => {
+    assetsLoaded = true
+    revealHeroScene()
+  }, 4200)
 
   function getRendererPixelRatio() {
     const layoutCap = lowCoreDevice ? Math.min(currentLayout.pixelRatioCap, 1.25) : currentLayout.pixelRatioCap
@@ -171,9 +200,14 @@ onMounted(async () => {
   }
 
   function makeTexturePaths(kind: keyof typeof heroTextureSet) {
-    const textureFolder = kind === 'table' ? 'table' : `card-${kind}`
+    const textureFolder = kind === 'table'
+      ? 'table'
+      : kind === 'tableRing'
+        ? 'table-ring'
+        : `card-${kind}`
     const base = `/textures/${textureFolder}/${heroTextureSet[kind]}`
     return {
+      albedo: `${base}/albedo.png`,
       ao: `${base}/ao.png`,
       height: `${base}/height.png`,
       metallic: kind === 'shell' ? `${base}/metalic.png` : `${base}/metallic.png`,
@@ -384,9 +418,9 @@ onMounted(async () => {
     if (!ctx) return null
 
     const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32)
-    gradient.addColorStop(0, 'rgba(255,255,255,1)')
-    gradient.addColorStop(0.28, 'rgba(255,255,255,0.82)')
-    gradient.addColorStop(0.62, 'rgba(255,255,255,0.2)')
+    gradient.addColorStop(0, 'rgba(240,253,255,1)')
+    gradient.addColorStop(0.28, 'rgba(125,211,252,0.92)')
+    gradient.addColorStop(0.68, 'rgba(45,212,191,0.28)')
     gradient.addColorStop(1, 'rgba(255,255,255,0)')
     ctx.fillStyle = gradient
     ctx.fillRect(0, 0, starCanvas.width, starCanvas.height)
@@ -398,20 +432,29 @@ onMounted(async () => {
   }
 
   const roundStarTexture = makeRoundStarTexture()
+  const starCount = 980
+  const starFieldMinX = -11.5
+  const starFieldWidth = 23
   const starGeometry = new THREE.BufferGeometry()
-  const starPositions = new Float32Array(620 * 3)
-  for (let i = 0; i < starPositions.length; i += 3) {
-    starPositions[i] = (Math.random() - 0.5) * 22
+  const starPositions = new Float32Array(starCount * 3)
+  const starBaseX = new Float32Array(starCount)
+  const starSpeeds = new Float32Array(starCount)
+  for (let index = 0; index < starCount; index++) {
+    const i = index * 3
+    const x = starFieldMinX + Math.random() * starFieldWidth
+    starBaseX[index] = x
+    starSpeeds[index] = 0.1 + Math.random() * 0.13
+    starPositions[i] = x
     starPositions[i + 1] = (Math.random() - 0.5) * 12
     starPositions[i + 2] = -Math.random() * 12
   }
   starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3))
   const starMaterial = trackMaterial(new THREE.PointsMaterial({
     map: roundStarTexture ?? undefined,
-    color: 0xd7fff7,
-    size: 0.04,
+    color: 0xe0fbff,
+    size: 0.062,
     transparent: true,
-    opacity: 0.72,
+    opacity: 0.9,
     blending: THREE.AdditiveBlending,
     depthWrite: false,
     depthTest: false,
@@ -502,15 +545,17 @@ onMounted(async () => {
   })
 
   const tablePaths = makeTexturePaths('table')
+  const tableRepeat = 2.05
   const tableMaterial = trackMaterial(new THREE.MeshStandardMaterial({
-    color: 0x252d37,
-    aoMap: loadDataMap(tablePaths.ao, 2.05),
-    displacementMap: loadDataMap(tablePaths.height, 2.05),
+    color: 0xffffff,
+    map: loadColorMap(tablePaths.albedo, tableRepeat),
+    aoMap: loadDataMap(tablePaths.ao, tableRepeat),
+    displacementMap: loadDataMap(tablePaths.height, tableRepeat),
     displacementScale: 0.012,
-    metalnessMap: loadDataMap(tablePaths.metallic, 2.05),
-    normalMap: loadDataMap(tablePaths.normal, 2.05),
+    metalnessMap: loadDataMap(tablePaths.metallic, tableRepeat),
+    normalMap: loadDataMap(tablePaths.normal, tableRepeat),
     normalScale: new THREE.Vector2(1.08, 1.08),
-    roughnessMap: loadInvertedSmoothnessMap(tablePaths.smoothness, 2.05),
+    roughnessMap: loadInvertedSmoothnessMap(tablePaths.smoothness, tableRepeat),
     metalness: 0.36,
     roughness: 0.58,
     envMapIntensity: 0.72
@@ -548,10 +593,20 @@ onMounted(async () => {
   platformBase.receiveShadow = true
   platformGroup.add(platformBase)
 
+  const tableRingPaths = makeTexturePaths('tableRing')
+  const tableRingRepeat = 1.6
   const platformRingMaterial = trackMaterial(new THREE.MeshPhysicalMaterial({
-    color: 0x101722,
-    roughness: 0.22,
-    metalness: 0.9,
+    color: 0xffffff,
+    map: loadColorMap(tableRingPaths.albedo, tableRingRepeat),
+    aoMap: loadDataMap(tableRingPaths.ao, tableRingRepeat),
+    displacementMap: loadDataMap(tableRingPaths.height, tableRingRepeat),
+    displacementScale: 0.006,
+    metalnessMap: loadDataMap(tableRingPaths.metallic, tableRingRepeat),
+    normalMap: loadDataMap(tableRingPaths.normal, tableRingRepeat),
+    normalScale: new THREE.Vector2(0.72, 0.72),
+    roughnessMap: loadInvertedSmoothnessMap(tableRingPaths.smoothness, tableRingRepeat),
+    roughness: 0.28,
+    metalness: 0.86,
     clearcoat: 0.48,
     clearcoatRoughness: 0.18,
     emissive: 0x0f3442,
@@ -985,7 +1040,13 @@ onMounted(async () => {
     stars.rotation.y = time * 0.035
     stars.position.x = Math.sin(time * 0.055) * 0.18 - parallaxPointer.x * 0.06
     stars.position.y = Math.cos(time * 0.05) * 0.08 + parallaxPointer.y * 0.04
-    starMaterial.opacity = 0.62 + Math.sin(time * 1.4) * 0.1
+    const starPositionAttribute = starGeometry.getAttribute('position')
+    for (let index = 0; index < starCount; index++) {
+      const wrappedX = (starBaseX[index] - starFieldMinX + time * starSpeeds[index]) % starFieldWidth
+      starPositions[index * 3] = starFieldMinX + wrappedX
+    }
+    starPositionAttribute.needsUpdate = true
+    starMaterial.opacity = 0.84 + Math.sin(time * 1.4) * 0.12
     redNebula.position.x = 0.6 + Math.sin(time * 0.045) * 0.18 - parallaxPointer.x * 0.08
     redNebula.position.y = 0.7 + Math.cos(time * 0.035) * 0.08 + parallaxPointer.y * 0.05
     blueNebula.position.x = 1.2 + Math.sin(time * 0.085) * 0.34 - parallaxPointer.x * 0.22
@@ -1073,6 +1134,8 @@ onMounted(async () => {
     renderer.render(backgroundScene, camera)
     renderer.clearDepth()
     renderer.render(scene, camera)
+    renderedFrameCount += 1
+    revealHeroScene()
     requestNextFrame()
   }
 
@@ -1081,6 +1144,8 @@ onMounted(async () => {
   cleanupHeroScene = () => {
     running = false
     if (frame) window.cancelAnimationFrame(frame)
+    window.clearTimeout(fallbackRevealTimer)
+    if (revealTimer) window.clearTimeout(revealTimer)
     hero.removeEventListener('pointermove', onPointerMove)
     hero.removeEventListener('pointerleave', onPointerLeave)
     canvas.removeEventListener('pointerdown', onPointerDown)
@@ -1105,8 +1170,28 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section ref="heroRef" class="hero" aria-labelledby="hero-title">
+  <section
+    ref="heroRef"
+    class="hero"
+    :class="{ 'hero--ready': heroSceneReady }"
+    aria-labelledby="hero-title"
+  >
     <canvas ref="canvasRef" class="hero-canvas" aria-hidden="true" />
+
+    <div
+      class="hero-loader"
+      :class="{ 'hero-loader--hidden': heroSceneReady }"
+      :aria-hidden="heroSceneReady ? 'true' : 'false'"
+      role="status"
+    >
+      <div class="hero-loader-panel">
+        <span class="hero-loader-kicker">pdsystems.dev</span>
+        <span class="hero-loader-title">Loading systems</span>
+        <span class="hero-loader-track" aria-hidden="true">
+          <span />
+        </span>
+      </div>
+    </div>
 
     <div class="hero-content">
       <p class="eyebrow">Self-hosted systems, creative tools, and engine work</p>
